@@ -1,3 +1,5 @@
+//Code By :- Abhijeet Sharma
+//B15102
 #ifndef BSTREE_HPP
 #define BSTREE_HPP 1
 #include "BinaryTree.hpp"
@@ -146,76 +148,123 @@ template<class Key,class Value>  void BSTree <Key,Value>::print(){
 this->print_in_order();
 }
 template<class Key,class Value>  void BSTree <Key,Value>::remove(const Key& key){
-    BinaryNode<Key,Value> * temp1;
-    temp1 = get(this->root,key);
-    
-    _size--;
-    if(temp1->left==NULL&&temp1->right==NULL){
-      std::cout<<"Right : Null Left : NULL "<<std::endl;
-        if((temp1->parent)->left==temp1){
-          (temp1->parent)->left=NULL;
-          delete temp1;
-        }
-        else{
-          (temp1->parent)->right=NULL;
-          delete temp1;
-        } 
-    }
-    else{ 
-      if((temp1->right==NULL&&temp1->left!=NULL)){
-            if((temp1->parent)->left==temp1){
-              
-              (temp1->parent)->left = temp1->left;
-              (temp1->left)->parent=temp1->parent;
-              delete temp1;
-              return;
-            }
-            else{
-              
-              (temp1->parent)->right = temp1->left;
-              (temp1->left)->parent=temp1->parent;
-              delete temp1;
-              return;
-            }
+   
+
+    BinaryNode<Key, Value> *temp9 = this->root;
+    BinaryNode<Key, Value> *delNode;
+
+    //to find position of key
+    while(temp9){
+      if(temp9->key == key){
+        delNode = temp9;
+        break;
       }
-      else{
-        if((temp1->right!=NULL&&temp1->left==NULL)){
-          if((temp1->parent)->left==temp1){
-            
-            (temp1->parent)->left = temp1->right;
-            (temp1->right)->parent=temp1->parent;
-            delete temp1;
-            return;
-          } 
-          else{
 
-            
-            (temp1->parent)->right = temp1->right;
-            (temp1->right)->parent=temp1->parent;
-            delete temp1;
-            return;
-          }
-        }
-        else{
-          if(temp1->right!=NULL&&temp1->left!=NULL){
+      if(temp9->key > key)
+        temp9 = temp9->left;
+      else
+        temp9 = temp9->right;
+    }
 
-            
-              BinaryNode<Key,Value> *temp2 = find_minimum(temp1->right);
-              temp1->key=temp2->key;
-              temp1->val=temp2->val;
-            if((temp2->parent)->left==temp2){
-              (temp2->parent)->left=NULL;
-            }
-            else{
-              (temp2->parent)->right=NULL;
-            }
-            delete temp2;
-            return;
-          }
+    //when key does not exists
+    if(!temp9)
+      return;
+
+    //when key is at leaf node
+    if(!temp9->left && !temp9->right){
+      if(temp9->parent->left == temp9)
+        temp9->parent->left = NULL;
+      else
+        temp9->parent->right = NULL;
+
+      delete temp9;
+      _size--;
+      return;
+    }
+
+    //to find samllest node in right subtree
+    if(temp9->right){
+      temp9 = temp9->right;
+
+      //when root node in right subtree is smallest node
+      if(!temp9->left){
+        if(temp9->right){
+          temp9->parent->left = temp9->right;
+          temp9->right->parent = temp9->parent;
         }
+
+        delNode->key = temp9->key;
+        delNode->color = temp9->color;
+        delNode->val = temp9->val;
+        delNode->right = NULL;
+        delete temp9;
+        _size--;
+        return;
+      }
+
+      while(temp9){
+        if(!temp9->left){
+
+          if(temp9->right){
+            temp9->parent->left = temp9->right;
+            temp9->right->parent = temp9->parent;
+          }
+
+          delNode->key = temp9->key;
+          delNode->val = temp9->val;
+          delNode->color = temp9->color;
+          temp9->parent->left = NULL;
+          delete temp9;
+          _size--;
+          return;
+        }
+
+        temp9 = temp9->left;
+      }
+    }
+
+    //to find largest node in left subtree
+    if(temp9->left){
+      temp9 = temp9->left;
+
+      //when root node in left subtree is largest node
+      if(!temp9->right){
+        if(temp9->left){
+          temp9->parent->right = temp9->left;
+          temp9->left->parent = temp9->parent;
+        }
+
+        delNode->key = temp9->key;
+        delNode->val = temp9->val;
+        delNode->color = temp9->color;
+        delNode->left = NULL;
+        delete temp9;
+        _size--;
+        return;
+      }
+
+      while(temp9){
+        if(!temp9->right){
+
+          if(temp9->left){
+            temp9->parent->right = temp9->left;
+            temp9->left->parent = temp9->parent;
+          }
+
+          delNode->key = temp9->key;
+          delNode->val = temp9->val;
+          delNode->color = temp9->color;
+          temp9->parent->right = NULL;
+          delete temp9;
+          _size--;
+          return;
+        }
+
+        temp9 = temp9->right;
       }
     }
 }
+
 template<class Key,class Value> BinaryNode<Key,Value> * BSTree <Key,Value>::get(BinaryNode<Key,Value> *root,const Key& key){
 // Base Cases: root is null or key is present at root
     if (root == NULL || root->key == key)

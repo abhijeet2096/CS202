@@ -1,3 +1,6 @@
+//Code By :- Abhijeet Sharma
+//B15102
+
 #ifndef BINARYTREE_HPP
 #define BINARYTREE_HPP 1
 #define Default_key  596
@@ -15,6 +18,7 @@ public:
 	Key key;
 	Value val;
 	BinaryNode<Key,Value> * root,* left,* right,* parent;
+  int color ;
     /*Default constructor. Should assign the default value to key and value
      */
 	BinaryNode();
@@ -45,10 +49,10 @@ public:
   */
   void display(BinaryNode<Key,Value> *);
   void display_fake();
-  bool find_minimum(BinaryNode<Key,Value> *,Key& key_received);
-  bool find_maximum(BinaryNode<Key,Value> *,Key& key_received);
-  bool find_successor(BinaryNode<Key,Value> *,Value& value_received,Value& value_received_old);
-  bool find_predecessor(BinaryNode<Key,Value> *,Value& value_received,Value& value_received_old);
+  void find_minimum(BinaryNode<Key,Value> *,Key& key_received);
+  void find_maximum(BinaryNode<Key,Value> *,Key& key_received);
+  void find_successor(BinaryNode<Key,Value> *,Value& value_received,Value& value_received_old);
+  void find_predecessor(BinaryNode<Key,Value> *,Value& value_received,Value& value_received_old);
   /* Implement get function to retrieve the value corresponding to given key in binary tree.
    Overloaded*/
   Value get(BinaryNode<Key,Value> *,const Key& key,Value& value_received);
@@ -135,6 +139,7 @@ template<class Key,class Value>  BinaryNode <Key,Value> :: BinaryNode(){
             this->left = NULL;
             this->right= NULL;
             this->parent= NULL;
+            this->color=0;
 
 }
 //Overloaded constructor
@@ -144,6 +149,7 @@ template<class Key,class Value> BinaryNode <Key,Value> :: BinaryNode(Key key, Va
             this->left = NULL;
             this->right= NULL;
             this->parent= NULL;
+             this->color=0;
 
 }
 template<class Key,class Value> Value BinaryTree <Key,Value> :: get(const Key& key){
@@ -335,7 +341,7 @@ template<class Key,class Value> void BinaryTree <Key,Value> :: display(BinaryNod
         while (nodeCount > 0)
         {
             BinaryNode<Key,Value> *node = q.front();
-            std::cout << node->val << " ";
+            std::cout << " "<< node->key << "|" << node->val << " ";
             q.pop();
             if (node->left != NULL)
                 q.push(node->left);
@@ -352,9 +358,9 @@ template<class Key,class Value> Key BinaryTree <Key,Value> :: minimum(){
   find_minimum(root,key_received);
   return key_received;
 }
-template<class Key,class Value> bool BinaryTree <Key,Value> :: find_minimum( BinaryNode<Key,Value> *temp1, Key& key_received){
+template<class Key,class Value> void BinaryTree <Key,Value> :: find_minimum( BinaryNode<Key,Value> *temp1, Key& key_received){
   if(temp1== NULL)
-    return true;
+    return ;
   if(temp1->key <= key_received )
    key_received = temp1->key; 
   this->find_minimum(temp1->left,key_received);
@@ -365,9 +371,9 @@ template<class Key,class Value> Key BinaryTree <Key,Value> :: maximum(){
   find_maximum(root,key_received);
   return key_received;
 }
-template<class Key,class Value> bool BinaryTree <Key,Value> :: find_maximum( BinaryNode<Key,Value> *temp1, Key& key_received){
+template<class Key,class Value> void BinaryTree <Key,Value> :: find_maximum( BinaryNode<Key,Value> *temp1, Key& key_received){
   if(temp1== NULL)
-    return true;
+    return ;
   if(temp1->key >= key_received )
    key_received = temp1->key; 
   this->find_maximum(temp1->left,key_received);
@@ -380,9 +386,9 @@ template<class Key,class Value> Key BinaryTree <Key,Value> :: successor(const Ke
   find_successor(root,value_received,value_received_old);
   return value_received_old;
 }
-template<class Key,class Value> bool BinaryTree <Key,Value> :: find_successor( BinaryNode<Key,Value> *temp1,Value& value_received,Value& value_received_old){
+template<class Key,class Value> void BinaryTree <Key,Value> :: find_successor( BinaryNode<Key,Value> *temp1,Value& value_received,Value& value_received_old){
   if(temp1== NULL)
-    return true;
+    return ;
   if(temp1->val > value_received && temp1->val <= value_received_old)
   	value_received_old=temp1->val;
   this->find_successor(temp1->left,value_received,value_received_old);
@@ -395,9 +401,9 @@ template<class Key,class Value> Key BinaryTree <Key,Value> :: predecessor(const 
   find_predecessor(root,value_received,value_received_old);
   return value_received_old; 
 }
-template<class Key,class Value> bool BinaryTree <Key,Value> :: find_predecessor( BinaryNode<Key,Value> *temp1,Value& value_received,Value& value_received_old){
+template<class Key,class Value> void BinaryTree <Key,Value> :: find_predecessor( BinaryNode<Key,Value> *temp1,Value& value_received,Value& value_received_old){
    if(temp1== NULL)
-    return true;
+    return ;
   if(temp1->val < value_received && temp1->val >= value_received_old)
   	value_received_old=temp1->val;
 
